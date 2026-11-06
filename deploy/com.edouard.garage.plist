@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.edouard.garage</string>
+
+  <!-- Les secrets vivent dans env.sh (chmod 600), pas dans ce fichier. -->
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>-c</string>
+    <string>. "@@DATA_DIR@@/env.sh" &amp;&amp; exec "@@INSTALL_DIR@@/garage/bin/garage" start</string>
+  </array>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PHX_SERVER</key>      <string>true</string>
+    <key>PHX_HOST</key>        <string>localhost</string>
+    <key>PORT</key>            <string>@@PORT@@</string>
+    <key>DATABASE_PATH</key>   <string>@@DATA_DIR@@/garage.db</string>
+    <key>UPLOADS_DIR</key>     <string>@@DATA_DIR@@/uploads</string>
+    <key>HOME</key>            <string>@@HOME@@</string>
+    <key>LANG</key>            <string>fr_FR.UTF-8</string>
+  </dict>
+
+  <!-- Démarre à l'ouverture de session, et se relance s'il s'arrête. -->
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key>
+    <false/>
+  </dict>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+
+  <key>WorkingDirectory</key>
+  <string>@@INSTALL_DIR@@</string>
+  <key>StandardOutPath</key>
+  <string>@@LOG_DIR@@/application.log</string>
+  <key>StandardErrorPath</key>
+  <string>@@LOG_DIR@@/erreurs.log</string>
+
+  <key>ProcessType</key>
+  <string>Interactive</string>
+</dict>
+</plist>

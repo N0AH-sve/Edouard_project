@@ -1,0 +1,105 @@
+name: release-macos
+
+# Compile une release auto-portante pour macOS (Apple Silicon + Intel).
+# L'archive produite embarque Erlang/OTP : rien à installer sur le Mac cible.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+env:
+  OTP_VERSION: "27.3.4"
+  ELIXIR_VERSION: "1.20.5"
+  MIX_ENV: prod
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15   # Apple Silicon (M1/M2/M3/M4)
+            arch: arm64
+          - runner: macos-13   # Intel
+            arch: x86_64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: ${{ env.OTP_VERSION }}
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+
+      - name: Vérifier l'architecture du runner
+        run: |
+          got="$(uname -m)"
+          echo "runner=${{ matrix.runner }} uname -m=$got attendu=${{ matrix.arch }}"
+          [ "$got" = "${{ matrix.arch }}" ] || { echo "::error::architecture inattendue"; exit 1; }
+
+      - name: Cache des dépendances
+        uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ matrix.arch }}-mix-${{ hashFiles('mix.lock') }}
+          restore-keys: ${{ matrix.arch }}-mix-
+
+      - name: Dépendances
+        run: |
+          mix deps.get --only prod
+          mix deps.compile
+
+      - name: Compiler et construire les assets
+        run: |
+          mix compile --warnings-as-errors
+          mix assets.deploy
+
+      - name: Construire la release
+        run: mix release --overwrite
+
+      - name: Empaqueter
+        run: |
+          ver="${GITHUB_REF_NAME#v}"
+          [ "$ver" = "$GITHUB_REF_NAME" ] && ver="dev-${GITHUB_SHA::7}"
+          name="garage-${ver}-macos-${{ matrix.arch }}"
+          mkdir -p "dist/$name"
+          cp -R _build/prod/rel/garage "dist/$name/"
+          cp deploy/install.command "dist/$name/"
+          cp deploy/com.edouard.garage.plist "dist/$name/"
+          cp deploy/com.edouard.garage.backup.plist "dist/$name/"
+          cp deploy/backup.sh "dist/$name/"
+          cp deploy/LISEZ-MOI.txt "dist/$name/"
+          chmod +x "dist/$name/install.command" "dist/$name/backup.sh"
+          # Signature ad-hoc : évite le "binaire corrompu" de Gatekeeper
+          # sur les exécutables de la release (ne remplace pas une vraie
+          # signature Developer ID, mais suffit pour un usage local).
+          find "dist/$name/garage" -type f -perm -u+x -exec \
+            codesign --force --sign - {} \; 2>/dev/null || true
+          cd dist && zip -qry "$name.zip" "$name"
+          echo "ASSET=dist/$name.zip" >> "$GITHUB_ENV"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: garage-macos-${{ matrix.arch }}
+          path: ${{ env.ASSET }}
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - name: Publier la release GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*.zip
+          generate_release_notes: true

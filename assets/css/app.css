@@ -1,0 +1,157 @@
+/* Feuille de style de l'application Garage. */
+
+@import "tailwindcss" source(none);
+@import "phoenix-colocated/garage/colocated.css";
+@source "../css";
+@source "../js";
+@source "../../lib/garage_web";
+@source "../../_build/dev/phoenix-colocated/garage/*/";
+
+@plugin "../vendor/heroicons";
+
+@plugin "daisyui/packages/bundle/daisyui" {
+  themes: false;
+}
+
+/* ---------------------------------------------------------------------------
+   Palette
+   --------------------------------------------------------------------------- */
+
+:root {
+  --color-1: #F8FAFC; /* fond de page */
+  --color-2: #E2E8F0; /* bordures, séparateurs */
+  --color-3: #3B82F6; /* accent principal, boutons */
+  --color-4: #1E40AF; /* accent foncé, survol */
+  --color-5: #0F172A; /* texte, barre d'actions */
+
+  /* Teintes dérivées, utilisées pour les pastilles de statut. */
+  --color-succes: #16A34A;
+  --color-attente: #F59E0B;
+  --color-danger: #DC2626;
+}
+
+@plugin "daisyui/packages/bundle/daisyui-theme" {
+  name: "garage";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+
+  --color-base-100: #FFFFFF;
+  --color-base-200: var(--color-1);
+  --color-base-300: var(--color-2);
+  --color-base-content: var(--color-5);
+
+  --color-primary: var(--color-3);
+  --color-primary-content: #FFFFFF;
+  --color-secondary: var(--color-4);
+  --color-secondary-content: #FFFFFF;
+  --color-accent: var(--color-4);
+  --color-accent-content: #FFFFFF;
+
+  --color-neutral: var(--color-5);
+  --color-neutral-content: #FFFFFF;
+
+  --color-info: var(--color-3);
+  --color-info-content: #FFFFFF;
+  --color-success: var(--color-succes);
+  --color-success-content: #FFFFFF;
+  --color-warning: var(--color-attente);
+  --color-warning-content: #FFFFFF;
+  --color-error: var(--color-danger);
+  --color-error-content: #FFFFFF;
+
+  /* Boutons et champs en pilule, cartes très arrondies : cf. maquette. */
+  --radius-selector: 0.375rem;
+  --radius-field: 9999px;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Réglages de base
+   --------------------------------------------------------------------------- */
+
+html {
+  background-color: var(--color-1);
+}
+
+body {
+  background-color: var(--color-1);
+  color: var(--color-5);
+}
+
+/* Les zones de texte restent rectangulaires : une pilule serait illisible. */
+textarea.textarea,
+textarea {
+  border-radius: 0.75rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Pastilles de statut (cf. maquette : point coloré + libellé majuscule)
+   --------------------------------------------------------------------------- */
+
+.pastille {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pastille::before {
+  content: "";
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 9999px;
+  background-color: currentColor;
+  flex: none;
+}
+
+.pastille-succes  { color: var(--color-succes); background-color: color-mix(in srgb, var(--color-succes) 12%, #fff); }
+.pastille-info    { color: var(--color-3);      background-color: color-mix(in srgb, var(--color-3) 12%, #fff); }
+.pastille-attente { color: var(--color-attente); background-color: color-mix(in srgb, var(--color-attente) 14%, #fff); }
+.pastille-neutre  { color: #64748B;             background-color: var(--color-1); }
+.pastille-danger  { color: var(--color-danger); background-color: color-mix(in srgb, var(--color-danger) 12%, #fff); }
+
+/* ---------------------------------------------------------------------------
+   Tableaux
+   --------------------------------------------------------------------------- */
+
+.table-garage thead th {
+  background-color: var(--color-1);
+  color: #64748B;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: none;
+  border-bottom: 1px solid var(--color-2);
+  padding: 0.75rem 1rem;
+}
+
+.table-garage tbody tr {
+  border-bottom: 1px solid var(--color-2);
+  transition: background-color 120ms ease;
+}
+
+.table-garage tbody tr:hover {
+  background-color: var(--color-1);
+}
+
+.table-garage tbody td {
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* Ligne sélectionnée : liseré à gauche, comme sur la maquette. */
+.table-garage tbody tr.ligne-selectionnee {
+  background-color: color-mix(in srgb, var(--color-3) 5%, #fff);
+  box-shadow: inset 3px 0 0 0 var(--color-3);
+}

@@ -1,0 +1,97 @@
+========================================================
+   GARAGE — Installation sur votre Mac
+========================================================
+
+L'application s'installe en une fois. Ensuite elle démarre
+toute seule à chaque fois que vous allumez votre Mac.
+
+
+ÉTAPE 1 — Ouvrir l'installeur
+------------------------------------------------------
+
+Dans ce dossier, repérez le fichier :
+
+      install.command
+
+IMPORTANT : ne faites PAS un double-clic la première fois.
+
+macOS bloque par défaut les programmes téléchargés sur
+Internet. Il faut donc le lui autoriser une seule fois :
+
+   1. Faites un CLIC DROIT sur « install.command »
+      (ou Ctrl + clic)
+   2. Choisissez « Ouvrir » dans le menu
+   3. Une fenêtre vous demande confirmation :
+      cliquez sur « Ouvrir »
+
+Une fenêtre noire s'ouvre et l'installation démarre.
+Elle prend moins d'une minute.
+
+Aucun mot de passe ne vous sera demandé : tout s'installe
+dans votre dossier personnel.
+
+
+ÉTAPE 2 — C'est tout
+------------------------------------------------------
+
+À la fin, votre navigateur s'ouvre sur l'application.
+
+Vous trouverez aussi une application « Garage » dans
+votre dossier Applications personnel. Glissez-la dans
+le Dock, en bas de l'écran : ce sera votre raccourci
+de tous les jours.
+
+La première fois, l'application vous demandera votre
+nom, votre société et vos coordonnées. C'est à remplir
+une seule fois.
+
+
+AU QUOTIDIEN
+------------------------------------------------------
+
+  - Vous allumez votre Mac : l'application démarre seule.
+  - Vous cliquez sur l'icône « Garage » dans le Dock.
+  - Vous travaillez.
+  - Vous éteignez : tout est conservé.
+
+Vos données ne quittent jamais votre Mac. Elles ne sont
+envoyées sur aucun serveur, et l'application n'est
+accessible que depuis cet ordinateur.
+
+
+VOS SAUVEGARDES
+------------------------------------------------------
+
+Chaque jour à 12h30, une copie complète de vos clients,
+véhicules, interventions et PDF est enregistrée dans :
+
+      iCloud Drive / Garage-Sauvegardes / (date du jour)
+
+Les 30 derniers jours sont conservés.
+
+Si un jour votre Mac tombe en panne, ces dossiers
+contiennent tout ce qu'il faut pour repartir.
+
+
+SI QUELQUE CHOSE NE VA PAS
+------------------------------------------------------
+
+L'application ne s'ouvre pas ? Redémarrez le Mac : elle
+se relance automatiquement.
+
+Si le problème persiste, les journaux techniques sont
+dans votre dossier personnel, sous :
+
+      Bibliothèque / Logs / Garage /
+
+Envoyez le fichier « erreurs.log » à Noah.
+
+
+METTRE À JOUR
+------------------------------------------------------
+
+Pour installer une nouvelle version : téléchargez le
+nouveau dossier et relancez « install.command ».
+
+Vos données sont conservées — l'installeur ne touche
+jamais à votre base de clients.
