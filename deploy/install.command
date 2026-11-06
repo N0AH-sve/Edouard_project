@@ -26,18 +26,29 @@ BANNER
 [ "$(uname -s)" = "Darwin" ] || die "Cet installeur est destiné à macOS."
 
 # --- Architecture ------------------------------------------------------------
+# On interroge le binaire lui-même plutôt que le nom du dossier : celui-ci
+# peut avoir été renommé, et l'erreur « Bad CPU type » qui suivrait serait
+# incompréhensible.
 arch="$(uname -m)"
-case "$HERE" in
-  *macos-arm64*) want="arm64" ;;
-  *macos-x86_64*) want="x86_64" ;;
-  *) want="$arch" ;;
-esac
-if [ "$arch" != "$want" ]; then
-  die "Ce paquet est pour $want, or ce Mac est $arch.
-Téléchargez la version « macos-$arch »."
-fi
+[ -x "$HERE/garage/bin/garage" ] || die "Fichiers de l'application introuvables dans $HERE.
+Décompressez l'archive avant de lancer l'installeur."
 
-[ -x "$HERE/garage/bin/garage" ] || die "Fichiers de l'application introuvables dans $HERE."
+moteur="$(find "$HERE/garage" -name beam.smp -type f -print -quit 2>/dev/null || true)"
+
+if [ -n "$moteur" ]; then
+  decrit="$(file -b "$moteur" 2>/dev/null || true)"
+
+  case "$arch:$decrit" in
+    arm64:*arm64*|arm64:*universal*) : ;;
+    x86_64:*x86_64*|x86_64:*universal*) : ;;
+    *)
+      die "Cette version ne correspond pas à votre Mac.
+
+Votre Mac est de type « $arch ».
+Téléchargez l'archive dont le nom contient « macos-$arch »."
+      ;;
+  esac
+fi
 
 # --- Quarantaine Gatekeeper --------------------------------------------------
 say "1/7  Déblocage des fichiers téléchargés"

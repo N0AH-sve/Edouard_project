@@ -6,29 +6,50 @@ L'application s'installe en une fois. Ensuite elle démarre
 toute seule à chaque fois que vous allumez votre Mac.
 
 
-ÉTAPE 1 — Ouvrir l'installeur
+ÉTAPE 1 — Lancer l'installeur
 ------------------------------------------------------
 
 Dans ce dossier, repérez le fichier :
 
       install.command
 
-IMPORTANT : ne faites PAS un double-clic la première fois.
+Faites un double-clic dessus.
+
+Une fenêtre noire s'ouvre, l'installation démarre, elle
+prend moins d'une minute. Aucun mot de passe ne vous sera
+demandé.
+
+Si macOS vous demande l'autorisation d'accéder au dossier
+Téléchargements, acceptez.
+
+
+SI MACOS REFUSE DE L'OUVRIR
+------------------------------------------------------
 
 macOS bloque par défaut les programmes téléchargés sur
-Internet. Il faut donc le lui autoriser une seule fois :
+Internet. Un message du type « impossible d'ouvrir car
+le développeur ne peut pas être vérifié » apparaît.
 
-   1. Faites un CLIC DROIT sur « install.command »
-      (ou Ctrl + clic)
-   2. Choisissez « Ouvrir » dans le menu
-   3. Une fenêtre vous demande confirmation :
-      cliquez sur « Ouvrir »
+C'est normal, et voici comment passer outre. La méthode
+ci-dessous fonctionne sur toutes les versions de macOS :
 
-Une fenêtre noire s'ouvre et l'installation démarre.
-Elle prend moins d'une minute.
+   1. Ouvrez le Terminal :
+      appuyez sur Cmd + Espace, tapez « Terminal »,
+      puis Entrée.
 
-Aucun mot de passe ne vous sera demandé : tout s'installe
-dans votre dossier personnel.
+   2. Dans la fenêtre du Terminal, tapez exactement
+      ces cinq caractères, le dernier étant une espace :
+
+            bash
+
+   3. Sans rien taper d'autre, faites glisser le fichier
+      « install.command » depuis le Finder et lâchez-le
+      dans la fenêtre du Terminal.
+      Son emplacement s'écrit tout seul.
+
+   4. Appuyez sur Entrée.
+
+L'installation démarre.
 
 
 ÉTAPE 2 — C'est tout
