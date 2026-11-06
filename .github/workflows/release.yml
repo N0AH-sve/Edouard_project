@@ -14,16 +14,13 @@ env:
   MIX_ENV: prod
 
 jobs:
+  # Une seule cible : le Mac visé est un Apple Silicon. Compiler aussi
+  # pour Intel ajouterait un choix que l'utilisateur peut se tromper à
+  # faire, pour une machine qui n'existe pas.
   build:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - runner: macos-15   # Apple Silicon (M1/M2/M3/M4)
-            arch: arm64
-          - runner: macos-13   # Intel
-            arch: x86_64
-    runs-on: ${{ matrix.runner }}
+    runs-on: macos-15
+    env:
+      ARCH: arm64
     steps:
       - uses: actions/checkout@v4
 
@@ -35,8 +32,8 @@ jobs:
       - name: Vérifier l'architecture du runner
         run: |
           got="$(uname -m)"
-          echo "runner=${{ matrix.runner }} uname -m=$got attendu=${{ matrix.arch }}"
-          [ "$got" = "${{ matrix.arch }}" ] || { echo "::error::architecture inattendue"; exit 1; }
+          echo "uname -m=$got attendu=$ARCH"
+          [ "$got" = "$ARCH" ] || { echo "::error::architecture inattendue"; exit 1; }
 
       - name: Cache des dépendances
         uses: actions/cache@v4
@@ -44,8 +41,8 @@ jobs:
           path: |
             deps
             _build
-          key: ${{ matrix.arch }}-mix-${{ hashFiles('mix.lock') }}
-          restore-keys: ${{ matrix.arch }}-mix-
+          key: ${{ env.ARCH }}-mix-${{ hashFiles('mix.lock') }}
+          restore-keys: ${{ env.ARCH }}-mix-
 
       - name: Dépendances
         run: |
@@ -64,7 +61,7 @@ jobs:
         run: |
           ver="${GITHUB_REF_NAME#v}"
           [ "$ver" = "$GITHUB_REF_NAME" ] && ver="dev-${GITHUB_SHA::7}"
-          name="garage-${ver}-macos-${{ matrix.arch }}"
+          name="garage-${ver}-macos-${ARCH}"
           mkdir -p "dist/$name"
           cp -R _build/prod/rel/garage "dist/$name/"
           cp deploy/install.command "dist/$name/"
@@ -83,7 +80,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: garage-macos-${{ matrix.arch }}
+          name: garage-macos-${{ env.ARCH }}
           path: ${{ env.ASSET }}
           if-no-files-found: error
 

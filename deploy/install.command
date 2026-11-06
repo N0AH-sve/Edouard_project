@@ -38,14 +38,16 @@ moteur="$(find "$HERE/garage" -name beam.smp -type f -print -quit 2>/dev/null ||
 if [ -n "$moteur" ]; then
   decrit="$(file -b "$moteur" 2>/dev/null || true)"
 
+  # L'application n'est compilée que pour Apple Silicon.
   case "$arch:$decrit" in
     arm64:*arm64*|arm64:*universal*) : ;;
-    x86_64:*x86_64*|x86_64:*universal*) : ;;
     *)
-      die "Cette version ne correspond pas à votre Mac.
+      die "Ce Mac n'est pas compatible.
 
-Votre Mac est de type « $arch ».
-Téléchargez l'archive dont le nom contient « macos-$arch »."
+L'application est prévue pour les Mac à puce Apple
+(M1, M2, M3, M4). Ce Mac est de type « $arch ».
+
+Prévenez Noah : une version adaptée doit être compilée."
       ;;
   esac
 fi
