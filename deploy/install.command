@@ -133,12 +133,27 @@ cat > "$LAUNCHER/Contents/Info.plist" <<PLIST
 PLIST
 cat > "$LAUNCHER/Contents/MacOS/launcher" <<LAUNCH
 #!/bin/bash
-# Attend que le serveur réponde, puis ouvre le navigateur.
-for _ in \$(seq 1 30); do
-  if curl -fsS -o /dev/null "http://127.0.0.1:$PORT/"; then break; fi
-  sleep 0.5
-done
-open "http://127.0.0.1:$PORT/"
+# Ouvre l'application. Si le service ne répond pas, le relance d'abord :
+# sans cela, un service arrêté enverrait l'utilisateur sur une page
+# d'erreur sans aucune indication de quoi faire.
+repond() { curl -fsS -o /dev/null --max-time 2 "http://127.0.0.1:$PORT/"; }
+
+if ! repond; then
+  launchctl kickstart -k "gui/\$(id -u)/$APP_ID" 2>/dev/null \
+    || launchctl bootstrap "gui/\$(id -u)" "$AGENTS_DIR/$APP_ID.plist" 2>/dev/null \
+    || true
+
+  for _ in \$(seq 1 40); do
+    repond && break
+    sleep 0.5
+  done
+fi
+
+if repond; then
+  open "http://127.0.0.1:$PORT/"
+else
+  osascript -e 'display alert "Garage ne démarre pas" message "Redémarrez votre Mac. Si le problème persiste, envoyez à Noah le fichier erreurs.log situé dans Bibliothèque / Logs / Garage." as critical' >/dev/null 2>&1
+fi
 LAUNCH
 chmod +x "$LAUNCHER/Contents/MacOS/launcher"
 

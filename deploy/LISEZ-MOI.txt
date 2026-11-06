@@ -67,6 +67,21 @@ nom, votre société et vos coordonnées. C'est à remplir
 une seule fois.
 
 
+UNE NOTIFICATION APRÈS L'INSTALLATION
+------------------------------------------------------
+
+macOS affichera sans doute un message du type
+« Élément en arrière-plan ajouté ». C'est normal : c'est
+ce qui permet à l'application de démarrer toute seule.
+
+Vous la retrouverez dans :
+
+      Réglages Système > Général > Ouverture
+
+Laissez l'interrupteur activé. Si vous le désactivez,
+l'application ne se lancera plus au démarrage.
+
+
 AU QUOTIDIEN
 ------------------------------------------------------
 
@@ -97,8 +112,10 @@ contiennent tout ce qu'il faut pour repartir.
 SI QUELQUE CHOSE NE VA PAS
 ------------------------------------------------------
 
-L'application ne s'ouvre pas ? Redémarrez le Mac : elle
-se relance automatiquement.
+L'application ne s'ouvre pas ? Cliquez l'icône « Garage » :
+elle relance le service toute seule s'il s'est arrêté.
+
+Si cela ne suffit pas, redémarrez le Mac.
 
 Si le problème persiste, les journaux techniques sont
 dans votre dossier personnel, sous :
