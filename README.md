@@ -49,19 +49,43 @@ mix precommit
 
 ## Installation sur le Mac du garagiste
 
-Pousser un tag `v*` déclenche [la chaîne de publication](.github/workflows/release.yml),
-qui compile sur des runners macOS une release auto-portante — Erlang est
-embarqué, rien à installer sur la machine cible — pour Apple Silicon et
-pour Intel.
+Pousser un tag `v*` déclenche [la chaîne de publication](.github/workflows/release.yml) :
+GitHub Actions compile sur un runner macOS une release auto-portante —
+Erlang est embarqué, rien à installer sur la machine cible — et publie
+`garage-macos-arm64.zip`. Le nom est fixe, sans numéro de version, pour
+que l'URL `releases/latest/download/…` reste valable d'une version à
+l'autre.
 
-Il télécharge l'archive correspondant à son Mac, fait **clic droit →
-Ouvrir** sur `install.command` (une seule fois, pour passer Gatekeeper), et
-c'est terminé : l'application démarre seule à chaque ouverture de session,
-une icône est posée dans ses Applications, et une sauvegarde quotidienne
-part dans iCloud Drive.
+Sur son Mac, deux lignes dans le Terminal suffisent :
 
-Le détail est dans [deploy/LISEZ-MOI.txt](deploy/LISEZ-MOI.txt), écrit pour
-lui et non pour un développeur.
+```bash
+curl -fsSLo /tmp/garage.sh https://raw.githubusercontent.com/N0AH-sve/Edouard_project/main/deploy/installer.sh
+```
+
+```bash
+bash /tmp/garage.sh
+```
+
+L'application démarre ensuite seule à chaque ouverture de session, une
+icône est posée dans ses Applications, et une sauvegarde quotidienne part
+dans iCloud Drive. Aucun mot de passe administrateur n'est demandé : tout
+vit dans son dossier utilisateur.
+
+### Pourquoi le Terminal et non un double-clic
+
+macOS marque tout fichier enregistré par un navigateur d'un attribut
+`com.apple.quarantine`, puis refuse d'ouvrir un exécutable qui n'est pas
+signé avec un certificat Developer ID délivré par Apple et notarisé. Nos
+binaires sont signés « ad-hoc » — assez pour qu'Apple Silicon accepte de
+les exécuter, pas assez pour Gatekeeper.
+
+`curl` ne pose pas cet attribut. L'installation par le Terminal ne
+rencontre donc jamais le blocage, là où un double-clic sur une archive
+téléchargée le rencontre presque toujours.
+
+Pour qui a déjà l'archive sous la main — clé USB, copie locale —
+[deploy/LISEZ-MOI.txt](deploy/LISEZ-MOI.txt) décrit la marche à suivre,
+y compris le contournement si macOS bloque.
 
 ## Quelques partis pris
 

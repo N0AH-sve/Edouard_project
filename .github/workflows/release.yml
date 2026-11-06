@@ -75,8 +75,12 @@ jobs:
           # signature Developer ID, mais suffit pour un usage local).
           find "dist/$name/garage" -type f -perm -u+x -exec \
             codesign --force --sign - {} \; 2>/dev/null || true
-          cd dist && zip -qry "$name.zip" "$name"
-          echo "ASSET=dist/$name.zip" >> "$GITHUB_ENV"
+          # Nom d'archive FIXE, sans numéro de version : c'est ce qui
+          # rend l'URL « releases/latest/download/... » utilisable, et donc
+          # l'installation en une commande, sans interroger l'API GitHub
+          # (le Mac n'a ni jq ni python3 garantis).
+          cd dist && zip -qry "garage-macos-${ARCH}.zip" "$name"
+          echo "ASSET=dist/garage-macos-${ARCH}.zip" >> "$GITHUB_ENV"
 
       - uses: actions/upload-artifact@v4
         with:
