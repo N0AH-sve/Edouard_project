@@ -58,6 +58,9 @@ titre() { printf '\n========== %s ==========\n' "$*"; }
       export PHX_SERVER=true PHX_HOST=localhost PORT="$PORT"
       export DATABASE_PATH="$DATA_DIR/garage.db"
       export UPLOADS_DIR="$DATA_DIR/uploads"
+      # Sans cela le diagnostic ouvrirait lui-même des sockets réseau et
+      # déclencherait la fenêtre du pare-feu qu'on cherche à éviter.
+      export RELEASE_DISTRIBUTION=none
       # 15 secondes suffisent : soit il démarre, soit il a déjà échoué.
       "$INSTALL_DIR/garage/bin/garage" eval 'IO.puts("DEMARRAGE OK : la machine virtuelle se lance")' 2>&1 | tail -30
     )
@@ -65,7 +68,13 @@ titre() { printf '\n========== %s ==========\n' "$*"; }
     echo "  impossible : fichiers manquants"
   fi
 
-  titre "7. Quarantaine restante sur les binaires"
+  titre "7. Le pare-feu macOS bloque-t-il quelque chose ?"
+  /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate 2>/dev/null \
+    || echo "  état du pare-feu non lisible"
+  /usr/libexec/ApplicationFirewall/socketfilterfw --listapps 2>/dev/null \
+    | grep -iA1 -E 'beam|garage' || echo "  aucune règle concernant l'application"
+
+  titre "8. Quarantaine restante sur les binaires"
   xattr -lr "$INSTALL_DIR/garage" 2>/dev/null | grep -c quarantine \
     | xargs -I{} echo "  fichiers encore en quarantaine : {}"
 

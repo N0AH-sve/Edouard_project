@@ -90,12 +90,25 @@ if config_env() == :prod do
   config :garage, GarageWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
     http: [
-      # Enable IPv6 and bind on all interfaces.
-      # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
-      # See the documentation on https://bandit.hexdocs.pm/Bandit.html#t:options/0
-      # for details about using IPv6 vs IPv4 and loopback vs public addresses.
-      ip: {0, 0, 0, 0, 0, 0, 0, 0}
+      # Boucle locale UNIQUEMENT.
+      #
+      # Phoenix propose par défaut {0, 0, 0, 0, 0, 0, 0, 0}, c'est-à-dire
+      # toutes les interfaces. Ce serait ici une faute : l'application n'a
+      # ni comptes ni authentification, et cette absence n'est justifiable
+      # que parce qu'elle est injoignable depuis le réseau. Sur le wifi du
+      # garage, le fichier clients serait ouvert à tout le monde.
+      #
+      # Lier la boucle locale évite aussi la fenêtre du pare-feu macOS
+      # « autoriser les connexions entrantes ».
+      ip: {127, 0, 0, 1}
     ],
+
+    # « localhost » et « 127.0.0.1 » désignent la même machine mais sont
+    # deux chaînes différentes : Phoenix compare l'en-tête Origin du
+    # websocket à PHX_HOST, et refuse l'autre forme avec un 403. La page
+    # s'afficherait alors sans que rien ne fonctionne — ni recherche, ni
+    # formulaire, ni téléversement. On accepte donc les deux.
+    check_origin: ["//localhost", "//127.0.0.1"],
     secret_key_base: secret_key_base
 
   # ## SSL Support

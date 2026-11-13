@@ -22,6 +22,17 @@
     <key>UPLOADS_DIR</key>     <string>@@DATA_DIR@@/uploads</string>
     <key>HOME</key>            <string>@@HOME@@</string>
     <key>LANG</key>            <string>fr_FR.UTF-8</string>
+
+    <!-- Nœud unique et local : aucune distribution Erlang.
+         Par défaut une release démarre en « sname », ce qui lance epmd
+         sur 0.0.0.0:4369 plus un port de distribution sur toutes les
+         interfaces. Inutile ici, et cela déclenche la fenêtre du
+         pare-feu macOS : si l'utilisateur refuse, plus rien ne démarre.
+         En « none », aucune socket d'Erlang n'est ouverte. -->
+    <key>RELEASE_DISTRIBUTION</key> <string>none</string>
+
+    <!-- launchd ne fournit qu'un PATH minimal. -->
+    <key>PATH</key> <string>/usr/bin:/bin:/usr/sbin:/sbin</string>
   </dict>
 
   <!-- Démarre à l'ouverture de session, et se relance s'il s'arrête. -->
